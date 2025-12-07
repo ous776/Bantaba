@@ -1,50 +1,117 @@
-# Welcome to your Expo app 👋
+# Bantaba - West African Language Translation App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A React Native app for building word datasets for **Mandinka, Wolof, Jola, and Fula** languages through AI-powered translation generation and user verification.
 
-## Get started
+## 🌍 Supported Languages
 
-1. Install dependencies
+- 🇬🇧 **English** (source language)
+- 🇬🇲 **Mandinka** - Gambia, Senegal, Guinea
+- 🇸🇳 **Wolof** - Senegal, Gambia, Mauritania
+- 🇸🇳 **Jola (Joola)** - Senegal, Gambia, Guinea-Bissau
+- 🇬🇳 **Fula (Fulfulde)** - West Africa
 
-   ```bash
-   npm install
-   ```
+## ✨ Features
 
-2. Start the app
+- **Translation Generation**: Generate translations using AI models (OpenAI, custom APIs)
+- **User Verification**: Verify, correct, and submit translations with notes
+- **Batch Processing**: Generate multiple translations at once
+- **Dataset Management**: Track statistics and export verified data
+- **Category Support**: Organize words by categories (greetings, food, etc.)
 
-   ```bash
-   npx expo start
-   ```
+## 🚀 Setup
 
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
+1. **Install dependencies:**
 ```bash
-npm run reset-project
+npm install
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+2. **Add your translation data:**
+   - Add JSON files to `/data/` directory:
+     - `mandinka_lang.json` ✅ (already added)
+     - `wolof_lang.json` (empty - add your data)
+     - `fula_lang.json` (empty - add your data)  
+     - `jola_lang.json` (empty - add your data)
 
-## Learn more
+3. **Start the app:**
+```bash
+npm start
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+Then press `a` for Android, `i` for iOS, or `w` for Web.
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## ⚙️ Configuration
 
-## Join the community
+### JSON Data Format
 
-Join our community of developers creating universal apps.
+Your JSON files should follow this structure:
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+```json
+[
+  {
+    "english": "hello",
+    "mandinka": "salaam",
+    "wolof": "nanga def",
+    "fula": "jam",
+    "jola": "kasumay"
+  },
+  {
+    "english": "goodbye", 
+    "mandinka": "fo dii",
+    "wolof": "ba beneen yoon",
+    "fula": "sellam",
+    "jola": "kasumay"
+  }
+]
+```
+
+**Current Status:**
+- ✅ **Mandinka**: ~28,000+ translations loaded
+- ⚠️ **Wolof**: No data (add to `data/wolof_lang.json`)
+- ⚠️ **Fula**: No data (add to `data/fula_lang.json`)
+- ⚠️ **Jola**: No data (add to `data/jola_lang.json`)
+
+## 📁 Project Structure
+
+```
+src/
+├── config/
+│   └── languages.ts      # Language definitions
+├── screens/
+│   ├── HomeScreen.tsx
+│   ├── TranslationVerificationScreen.tsx
+│   └── DatasetManagementScreen.tsx
+├── services/
+│   ├── TranslationService.ts
+│   └── StorageService.ts
+└── types/
+    └── index.ts          # TypeScript interfaces
+```
+
+## 📊 How to Use
+
+1. **Select Language**: Choose Mandinka, Wolof, Jola, or Fula from home screen
+2. **Review Translation**: App shows random English word with AI translation
+3. **Edit if Needed**: Modify the translation if it's incorrect
+4. **Submit or Skip**: Save verified translation or skip to next word
+5. **Track Progress**: View statistics and export dataset anytime
+
+### Workflow per Language
+
+Each language has its own screen where you:
+- Get a random English word
+- See OpenAI-generated translation
+- Edit the translation if needed
+- Submit (saves to dataset) or Skip (moves to next word)
+- Track your progress in real-time
+
+## 🔜 Next Steps
+
+1. Add audio recording/playback for pronunciation verification
+2. Implement CSV/JSON batch import
+3. Add user authentication
+4. Set up backend sync for collaborative dataset building
+5. Integrate speech-to-text for audio transcription
+
+## 📱 Built with Expo
+
+This is an [Expo](https://expo.dev) project using [file-based routing](https://docs.expo.dev/router/introduction).
