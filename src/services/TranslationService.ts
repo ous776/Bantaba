@@ -1,4 +1,5 @@
 import { LanguageCode, Translation } from '../types';
+import { API_BASE_URL, USE_BACKEND } from '../config/api';
 
 // Import JSON data files - using try/catch for empty files
 let mandinkaData: any[] = [];
@@ -52,7 +53,38 @@ class TranslationService {
   ): Promise<Translation> {
     try {
       console.log(`Looking up translation for "${word}" from ${sourceLang} to ${targetLang}`);
-      
+
+      // If configured to use the backend, attempt to query it first
+      if (USE_BACKEND) {
+        try {
+          const url = `${API_BASE_URL}/translations/search/${targetLang}?q=${encodeURIComponent(word)}&limit=1`;
+          const resp = await fetch(url);
+          if (resp.ok) {
+            const data = await resp.json();
+            if (Array.isArray(data) && data.length > 0) {
+              const row = data[0];
+              return {
+                id: String(row.id),
+                sourceWord: row.english_word || word,
+                targetWord: row.translated_word || `[${targetLang.toUpperCase()}] ${word}`,
+                sourceLanguage: sourceLang,
+                targetLanguage: targetLang,
+                status: row.status || 'pending',
+                generatedBy: 'api',
+                createdAt: row.created_at ? new Date(row.created_at) : new Date(),
+                category: row.category || category,
+                difficulty: row.difficulty || undefined,
+              } as Translation;
+            }
+          } else {
+            console.warn('Backend search returned non-ok status', resp.status);
+          }
+        } catch (err) {
+          console.warn('Backend search failed, falling back to local data', err);
+        }
+      }
+
+      // Fallback to local lookup
       const translatedWord = this.findTranslation(word, targetLang);
       console.log(`Found translation: ${translatedWord}`);
 
@@ -129,8 +161,11 @@ class TranslationService {
 
   // Get a random English word from available translations
   getRandomEnglishWord(targetLang: LanguageCode): string {
+    // Note: this method remains synchronous for callers. If backend usage
+    // is required for random words, callers should use the backend endpoints
+    // directly or we could add an async variant. For now, keep local fallback.
     const targetData = this.languageData[targetLang];
-    
+
     if (!targetData || targetData.length === 0) {
       // Fallback to sample words if no data
       const fallbackWords = [
@@ -144,7 +179,7 @@ class TranslationService {
     // Get random word from available data
     const randomIndex = Math.floor(Math.random() * targetData.length);
     const randomEntry = targetData[randomIndex];
-    
+
     return randomEntry?.english || 'hello';
   }
 

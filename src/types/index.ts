@@ -1,4 +1,4 @@
-export type LanguageCode = 'en' | 'mnk' | 'wo' | 'dyo' | 'ff';
+export type LanguageCode = 'en' | 'mnk' | 'wo' | 'jo' | 'ff';
 
 export interface Translation {
   id: string;
@@ -28,8 +28,6 @@ export interface Language {
   code: LanguageCode;
   name: string;
   nativeName: string;
-  flag: string;
-  region: string;
 }
 
 export interface AudioData {

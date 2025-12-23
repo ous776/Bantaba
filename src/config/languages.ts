@@ -5,36 +5,26 @@ export const SUPPORTED_LANGUAGES: Language[] = [
     code: 'en',
     name: 'English',
     nativeName: 'English',
-    flag: '🇬🇧',
-    region: 'International',
   },
   {
     code: 'mnk',
     name: 'Mandinka',
     nativeName: 'Mandinka',
-    flag: '🇬🇲',
-    region: 'Gambia, Senegal, Guinea',
   },
   {
     code: 'wo',
     name: 'Wolof',
     nativeName: 'Wolof',
-    flag: '🇸🇳',
-    region: 'Senegal, Gambia, Mauritania',
   },
   {
-    code: 'dyo',
+    code: 'jo',
     name: 'Jola',
     nativeName: 'Joola',
-    flag: '🇸🇳',
-    region: 'Senegal, Gambia, Guinea-Bissau',
   },
   {
     code: 'ff',
     name: 'Fula',
-    nativeName: 'Fulfulde',
-    flag: '🇬🇳',
-    region: 'West Africa',
+    nativeName: 'Poullor',
   },
 ];
 
