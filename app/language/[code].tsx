@@ -88,16 +88,28 @@ export default function LanguageScreen() {
       return;
     }
 
-    await StorageService.saveVerification({
-      translationId,
-      isCorrect: true,
-      correctedWord: translation,
-      verifiedBy: 'user',
-      verifiedAt: new Date(),
-    });
+    console.log('=== SUBMIT DEBUG ===');
+    console.log('Translation ID:', translationId);
+    console.log('Translation text:', translation);
+    console.log('USE_BACKEND:', process.env.EXPO_PUBLIC_USE_BACKEND);
+    console.log('API_BASE_URL:', process.env.EXPO_PUBLIC_API_BASE_URL);
 
-    setStats(prev => ({...prev, verified: prev.verified + 1}));
-    loadNewWord();
+    try {
+      await StorageService.saveVerification({
+        translationId,
+        isCorrect: true,
+        correctedWord: translation,
+        verifiedBy: 'user',
+        verifiedAt: new Date(),
+      });
+
+      console.log('✅ Verification saved successfully');
+      setStats(prev => ({...prev, verified: prev.verified + 1}));
+      loadNewWord();
+    } catch (error) {
+      console.error('❌ Error saving verification:', error);
+      Alert.alert('Error', 'Failed to save translation. Please try again.');
+    }
   };
 
   const handleSkip = () => {

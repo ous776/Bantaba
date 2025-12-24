@@ -1,5 +1,6 @@
 import { LanguageCode, Translation } from '../types';
 import { API_BASE_URL, USE_BACKEND } from '../config/api';
+import ApiService from './ApiService';
 
 // Import JSON data files - using try/catch for empty files
 let mandinkaData: any[] = [];
@@ -54,8 +55,19 @@ class TranslationService {
     try {
       console.log(`Looking up translation for "${word}" from ${sourceLang} to ${targetLang}`);
 
-      // If configured to use the backend, attempt to query it first
+      // If configured to use the backend, try to get a random translation first
       if (USE_BACKEND) {
+        try {
+          const randomTranslation = await ApiService.getRandomTranslation(targetLang);
+          if (randomTranslation) {
+            console.log('Got random translation from backend:', randomTranslation);
+            return randomTranslation;
+          }
+        } catch (err) {
+          console.warn('Backend random translation failed, trying search', err);
+        }
+
+        // If no random translation, try search
         try {
           const url = `${API_BASE_URL}/translations/search/${targetLang}?q=${encodeURIComponent(word)}&limit=1`;
           const resp = await fetch(url);
