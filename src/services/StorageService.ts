@@ -27,10 +27,10 @@ class StorageService {
           this.TRANSLATIONS_KEY,
           JSON.stringify(updatedTranslations),
         );
-        console.log('Translation saved to both local storage and backend');
       }
     } catch (error) {
-      console.warn('Failed to save to backend, but saved locally:', error);
+      // Backend save failed, but local save succeeded
+      console.warn('Backend save failed, continuing with local save');
     }
   }
 
@@ -40,16 +40,12 @@ class StorageService {
   }
 
   async saveVerification(verification: VerificationResult): Promise<void> {
-    console.log('=== STORAGE SERVICE DEBUG ===');
-    console.log('Saving verification:', verification);
-    
     const verifications = await this.getVerifications();
     verifications.push(verification);
     await AsyncStorage.setItem(
       this.VERIFICATIONS_KEY,
       JSON.stringify(verifications),
     );
-    console.log('✅ Verification saved to local storage');
 
     // Update translation status locally
     const translations = await this.getTranslations();
@@ -70,18 +66,14 @@ class StorageService {
         this.TRANSLATIONS_KEY,
         JSON.stringify(translations),
       );
-      console.log('✅ Translation updated in local storage');
 
       // Try to update backend as well
       try {
-        console.log('🔄 Attempting to save to backend...');
         await ApiService.updateTranslation(verification.translationId, updatedTranslation);
-        console.log('✅ Translation verification saved to backend');
       } catch (error) {
-        console.warn('⚠️ Failed to update backend, but saved locally:', error);
+        // Backend update failed, but local save succeeded
+        console.warn('Backend update failed, continuing with local save');
       }
-    } else {
-      console.warn('⚠️ Translation not found in local storage:', verification.translationId);
     }
   }
 

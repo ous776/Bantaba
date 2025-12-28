@@ -5,8 +5,14 @@
 
 import { Platform } from 'react-native';
 
-const tintColorLight = '#0a7ea4';
-const tintColorDark = '#fff';
+// Green and Brown Theme
+const primaryGreen = '#27ae60';
+const primaryBrown = '#8B4513';
+const darkGreen = '#1e7e34';
+const lightBrown = '#D2B48C';
+
+const tintColorLight = primaryGreen;
+const tintColorDark = lightBrown;
 
 export const Colors = {
   light: {
@@ -16,6 +22,9 @@ export const Colors = {
     icon: '#687076',
     tabIconDefault: '#687076',
     tabIconSelected: tintColorLight,
+    primary: primaryGreen,
+    secondary: primaryBrown,
+    accent: darkGreen,
   },
   dark: {
     text: '#ECEDEE',
@@ -24,6 +33,9 @@ export const Colors = {
     icon: '#9BA1A6',
     tabIconDefault: '#9BA1A6',
     tabIconSelected: tintColorDark,
+    primary: primaryGreen,
+    secondary: primaryBrown,
+    accent: lightBrown,
   },
 };
 

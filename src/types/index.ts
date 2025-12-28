@@ -1,4 +1,6 @@
-export type LanguageCode = 'en' | 'mnk' | 'wo' | 'dyo' | 'ff';
+export type LanguageCode = 'en' | 'mnk';
+// TODO: Add these language codes later
+// | 'wo' | 'ff' | 'dyo';
 
 export interface Translation {
   id: string;

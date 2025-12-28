@@ -1,12 +1,12 @@
-import { LanguageCode, Translation } from '../types';
 import { API_BASE_URL, USE_BACKEND } from '../config/api';
-import ApiService from './ApiService';
+import { LanguageCode, Translation } from '../types';
 
 // Import JSON data files - using try/catch for empty files
 let mandinkaData: any[] = [];
-let wolofData: any[] = [];
-let fulaData: any[] = [];
-let jolaData: any[] = [];
+// TODO: Uncomment these when adding more languages
+// let wolofData: any[] = [];
+// let fulaData: any[] = [];
+// let jolaData: any[] = [];
 
 try {
   mandinkaData = require('../../data/mandinka_lang.json') || [];
@@ -15,35 +15,37 @@ try {
   mandinkaData = [];
 }
 
-try {
-  wolofData = require('../../data/wolof_lang.json') || [];
-} catch (error) {
-  console.warn('Could not load wolof_lang.json');
-  wolofData = [];
-}
+// TODO: Uncomment these when adding more languages
+// try {
+//   wolofData = require('../../data/wolof_lang.json') || [];
+// } catch (error) {
+//   console.warn('Could not load wolof_lang.json');
+//   wolofData = [];
+// }
 
-try {
-  fulaData = require('../../data/fula_lang.json') || [];
-} catch (error) {
-  console.warn('Could not load fula_lang.json');
-  fulaData = [];
-}
+// try {
+//   fulaData = require('../../data/fula_lang.json') || [];
+// } catch (error) {
+//   console.warn('Could not load fula_lang.json');
+//   fulaData = [];
+// }
 
-try {
-  jolaData = require('../../data/jola_lang.json') || [];
-} catch (error) {
-  console.warn('Could not load jola_lang.json');
-  jolaData = [];
-}
+// try {
+//   jolaData = require('../../data/jola_lang.json') || [];
+// } catch (error) {
+//   console.warn('Could not load jola_lang.json');
+//   jolaData = [];
+// }
 
 class TranslationService {
   // Language data mapping
   private languageData: Record<LanguageCode, any[]> = {
     en: [], // English is source language
     mnk: mandinkaData,
-    wo: wolofData,
-    ff: fulaData,
-    dyo: jolaData,
+    // TODO: Uncomment these when adding more languages
+    // wo: wolofData,
+    // ff: fulaData,
+    // dyo: jolaData,
   };
 
   async generateTranslation(
@@ -53,21 +55,9 @@ class TranslationService {
     category?: string,
   ): Promise<Translation> {
     try {
-      console.log(`Looking up translation for "${word}" from ${sourceLang} to ${targetLang}`);
 
-      // If configured to use the backend, try to get a random translation first
+      // If configured to use the backend, try search first
       if (USE_BACKEND) {
-        try {
-          const randomTranslation = await ApiService.getRandomTranslation(targetLang);
-          if (randomTranslation) {
-            console.log('Got random translation from backend:', randomTranslation);
-            return randomTranslation;
-          }
-        } catch (err) {
-          console.warn('Backend random translation failed, trying search', err);
-        }
-
-        // If no random translation, try search
         try {
           const url = `${API_BASE_URL}/translations/search/${targetLang}?q=${encodeURIComponent(word)}&limit=1`;
           const resp = await fetch(url);
@@ -164,9 +154,10 @@ class TranslationService {
     const keyMap: Record<LanguageCode, string> = {
       en: 'english',
       mnk: 'mandinka',
-      wo: 'wolof',
-      ff: 'fula',
-      dyo: 'jola',
+      // TODO: Uncomment these when adding more languages
+      // wo: 'wolof',
+      // ff: 'fula',
+      // dyo: 'jola',
     };
     return keyMap[languageCode] || 'translation';
   }
@@ -200,9 +191,10 @@ class TranslationService {
     return {
       en: 0,
       mnk: this.languageData.mnk?.length || 0,
-      wo: this.languageData.wo?.length || 0,
-      ff: this.languageData.ff?.length || 0,
-      dyo: this.languageData.dyo?.length || 0,
+      // TODO: Uncomment these when adding more languages
+      // wo: this.languageData.wo?.length || 0,
+      // ff: this.languageData.ff?.length || 0,
+      // dyo: this.languageData.dyo?.length || 0,
     };
   }
 

@@ -23,23 +23,10 @@ export default function LanguageScreen() {
   const [translation, setTranslation] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [translationId, setTranslationId] = useState('');
-  const [stats, setStats] = useState({verified: 0, skipped: 0});
 
   useEffect(() => {
     loadNewWord();
-    loadStats();
   }, []);
-
-  const loadStats = async () => {
-    const translations = await StorageService.getTranslations();
-    const languageTranslations = translations.filter(
-      t => t.targetLanguage === code
-    );
-    setStats({
-      verified: languageTranslations.filter(t => t.status !== 'pending').length,
-      skipped: 0,
-    });
-  };
 
   const getRandomWord = (): string => {
     // Get random word from the language's JSON data
@@ -88,12 +75,6 @@ export default function LanguageScreen() {
       return;
     }
 
-    console.log('=== SUBMIT DEBUG ===');
-    console.log('Translation ID:', translationId);
-    console.log('Translation text:', translation);
-    console.log('USE_BACKEND:', process.env.EXPO_PUBLIC_USE_BACKEND);
-    console.log('API_BASE_URL:', process.env.EXPO_PUBLIC_API_BASE_URL);
-
     try {
       await StorageService.saveVerification({
         translationId,
@@ -104,7 +85,6 @@ export default function LanguageScreen() {
       });
 
       console.log('✅ Verification saved successfully');
-      setStats(prev => ({...prev, verified: prev.verified + 1}));
       loadNewWord();
     } catch (error) {
       console.error('❌ Error saving verification:', error);
@@ -113,7 +93,6 @@ export default function LanguageScreen() {
   };
 
   const handleSkip = () => {
-    setStats(prev => ({...prev, skipped: prev.skipped + 1}));
     loadNewWord();
   };
 
@@ -132,11 +111,9 @@ export default function LanguageScreen() {
           <Text style={styles.backButtonText}>← Back</Text>
         </TouchableOpacity>
         <Text style={styles.languageTitle}>
-          {language.flag} {language.name}
+          🌍 {language.name}
         </Text>
-        <View style={styles.statsContainer}>
-          <Text style={styles.statsText}>✓ {stats.verified}</Text>
-        </View>
+        <View style={styles.spacer} />
       </View>
 
       <View style={styles.content}>
@@ -158,7 +135,7 @@ export default function LanguageScreen() {
 
             <View style={styles.card}>
               <Text style={styles.label}>
-                {language.flag} {language.name}
+                 {language.name}
               </Text>
               <TextInput
                 style={styles.input}
@@ -197,10 +174,10 @@ export default function LanguageScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#f8f9fa',
   },
   header: {
-    backgroundColor: '#3498db',
+    backgroundColor: '#27ae60', // Primary green
     padding: 20,
     paddingTop: 60,
     flexDirection: 'row',
@@ -221,16 +198,8 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: 'center',
   },
-  statsContainer: {
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 12,
-  },
-  statsText: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: '600',
+  spacer: {
+    width: 50, // Same width as back button for centering
   },
   content: {
     flex: 1,
@@ -244,7 +213,7 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: 15,
     fontSize: 16,
-    color: '#7f8c8d',
+    color: '#8B4513', // Brown text
   },
   card: {
     backgroundColor: '#fff',
@@ -255,16 +224,19 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
+    borderLeftWidth: 4,
+    borderLeftColor: '#27ae60', // Green accent
   },
   label: {
     fontSize: 14,
-    color: '#7f8c8d',
+    color: '#8B4513', // Brown text
     marginBottom: 10,
+    fontWeight: '600',
   },
   sourceWord: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#2c3e50',
+    color: '#8B4513', // Brown text
   },
   arrowContainer: {
     alignItems: 'center',
@@ -272,11 +244,11 @@ const styles = StyleSheet.create({
   },
   arrow: {
     fontSize: 32,
-    color: '#3498db',
+    color: '#27ae60', // Green arrow
   },
   input: {
     fontSize: 24,
-    color: '#2c3e50',
+    color: '#8B4513', // Brown text
     minHeight: 60,
     textAlignVertical: 'top',
   },
@@ -292,10 +264,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   skipButton: {
-    backgroundColor: '#95a5a6',
+    backgroundColor: '#D2B48C', // Light brown
   },
   submitButton: {
-    backgroundColor: '#27ae60',
+    backgroundColor: '#27ae60', // Primary green
   },
   buttonText: {
     color: '#fff',
@@ -306,6 +278,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 20,
     fontSize: 14,
-    color: '#7f8c8d',
+    color: '#8B4513', // Brown text
   },
 });

@@ -5,17 +5,11 @@ class ApiService {
   private baseUrl = API_BASE_URL;
 
   async saveTranslation(translation: Translation): Promise<Translation | null> {
-    console.log('=== API SERVICE DEBUG ===');
-    console.log('USE_BACKEND:', USE_BACKEND);
-    console.log('API_BASE_URL:', this.baseUrl);
-    
     if (!USE_BACKEND) {
-      console.log('❌ Backend disabled, skipping API save');
       return null;
     }
 
     try {
-      console.log('🔄 Saving translation to backend:', translation);
       const response = await fetch(`${this.baseUrl}/translations`, {
         method: 'POST',
         headers: {
@@ -30,16 +24,12 @@ class ApiService {
         }),
       });
 
-      console.log('📡 Backend response status:', response.status);
-
       if (!response.ok) {
         const errorText = await response.text();
-        console.error('❌ Backend error response:', errorText);
         throw new Error(`HTTP error! status: ${response.status}, body: ${errorText}`);
       }
 
       const savedTranslation = await response.json();
-      console.log('✅ Translation saved to backend:', savedTranslation);
       
       // Return the translation with backend ID
       return {
@@ -47,14 +37,13 @@ class ApiService {
         id: savedTranslation.id.toString(),
       };
     } catch (error) {
-      console.error('❌ Failed to save translation to backend:', error);
+      console.error('Failed to save translation to backend:', error);
       throw error;
     }
   }
 
   async updateTranslation(id: string, updates: Partial<Translation>): Promise<Translation | null> {
     if (!USE_BACKEND) {
-      console.log('Backend disabled, skipping API update');
       return null;
     }
 
@@ -77,48 +66,10 @@ class ApiService {
       }
 
       const updatedTranslation = await response.json();
-      console.log('Translation updated in backend:', updatedTranslation);
       return updatedTranslation;
     } catch (error) {
       console.error('Failed to update translation in backend:', error);
       throw error;
-    }
-  }
-
-  async getRandomTranslation(languageCode: LanguageCode): Promise<Translation | null> {
-    if (!USE_BACKEND) {
-      return null;
-    }
-
-    try {
-      const response = await fetch(`${this.baseUrl}/translations/random/${languageCode}`);
-      
-      if (!response.ok) {
-        if (response.status === 404) {
-          console.log('No random translations available from backend');
-          return null;
-        }
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      
-      // Convert backend format to app format
-      return {
-        id: data.id.toString(),
-        sourceWord: data.english_word,
-        targetWord: data.translated_word,
-        sourceLanguage: 'en' as LanguageCode,
-        targetLanguage: languageCode,
-        status: data.status || 'pending',
-        generatedBy: 'api',
-        createdAt: new Date(),
-        category: data.category,
-        difficulty: data.difficulty,
-      };
-    } catch (error) {
-      console.error('Failed to get random translation from backend:', error);
-      return null;
     }
   }
 

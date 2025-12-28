@@ -11,21 +11,22 @@ export const SUPPORTED_LANGUAGES: Language[] = [
     name: 'Mandinka',
     nativeName: 'Mandinka',
   },
-  {
-    code: 'wo',
-    name: 'Wolof',
-    nativeName: 'Wolof',
-  },
-  {
-    code: 'jo',
-    name: 'Jola',
-    nativeName: 'Joola',
-  },
-  {
-    code: 'ff',
-    name: 'Fula',
-    nativeName: 'Poullor',
-  },
+  // TODO: Add these languages later
+  // {
+  //   code: 'wo',
+  //   name: 'Wolof',
+  //   nativeName: 'Wolof',
+  // },
+  // {
+  //   code: 'ff',
+  //   name: 'Fula',
+  //   nativeName: 'Poullor',
+  // },
+  // {
+  //   code: 'dyo',
+  //   name: 'Jola',
+  //   nativeName: 'Joola',
+  // },
 ];
 
 export const getLanguageByCode = (code: string): Language | undefined => {

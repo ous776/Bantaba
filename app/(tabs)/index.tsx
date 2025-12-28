@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
 import React from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native';
 import { SUPPORTED_LANGUAGES } from '../../src/config/languages';
 
 export default function HomeScreen() {
@@ -10,11 +10,28 @@ export default function HomeScreen() {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Bantaba</Text>
-        <Text style={styles.subtitle}>West African Language Translation</Text>
+        <View style={styles.headerTop}>
+            <View style={styles.brand}>
+              <Image source={require('../../assets/images/icon01.png')} style={styles.headerIcon} />
+              <Text style={styles.title}>Bantaba</Text>
+            </View>
+            <View style={styles.badge}>
+              <Text style={styles.badgeText}>{localLanguages.length} languages</Text>
+            </View>
+          </View>
+
+        <Text style={styles.subtitle}>Local Language Translation</Text>
         <Text style={styles.description}>
           Help build translation datasets by verifying AI-generated translations
         </Text>
+
+        <TouchableOpacity
+          style={styles.searchBar}
+          onPress={() => router.push('/search')}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.searchText}>🔎 Search translations or words</Text>
+        </TouchableOpacity>
       </View>
 
       <View style={styles.languagesSection}>
@@ -26,10 +43,10 @@ export default function HomeScreen() {
             style={styles.languageCard}
             onPress={() => router.push(`/language/${language.code}`)}>
             <View style={styles.languageHeader}>
-              <Text style={styles.languageFlag}>{language.flag}</Text>
+              <Text style={styles.languageFlag}>🌍</Text>
               <View style={styles.languageInfo}>
                 <Text style={styles.languageName}>{language.name}</Text>
-                <Text style={styles.languageRegion}>{language.region}</Text>
+                <Text style={styles.languageNative}>{language.nativeName}</Text>
               </View>
             </View>
             <Text style={styles.arrow}>→</Text>
@@ -37,11 +54,11 @@ export default function HomeScreen() {
         ))}
       </View>
 
-      <TouchableOpacity
-        style={styles.statsButton}
-        onPress={() => router.push('/stats')}>
-        <Text style={styles.statsButtonText}>📊 View Statistics</Text>
-      </TouchableOpacity>
+      <View style={styles.infoSection}>
+        <Text style={styles.infoText}>
+          More languages coming soon: Wolof, Fula, and Jola
+        </Text>
+      </View>
     </ScrollView>
   );
 }
@@ -49,13 +66,43 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#f8f9fa',
   },
   header: {
-    backgroundColor: '#3498db',
+    backgroundColor: '#27ae60', // Primary green
     padding: 30,
     paddingTop: 60,
     alignItems: 'center',
+  },
+  headerTop: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 6,
+  },
+  brand: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  headerIcon: {
+    width: 50,
+    height: 50,
+    marginRight: 12,
+    borderRadius: 10,
+    resizeMode: 'cover',
+    backgroundColor: 'rgba(255,255,255,0.15)'
+  },
+  badge: {
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 999,
+  },
+  badgeText: {
+    color: '#fff',
+    fontWeight: '600',
+    fontSize: 13,
   },
   title: {
     fontSize: 42,
@@ -65,14 +112,33 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 18,
-    color: '#ecf0f1',
+    color: '#e8f5e8',
     marginBottom: 10,
   },
   description: {
     fontSize: 14,
-    color: '#bdc3c7',
+    color: '#d4edda',
     textAlign: 'center',
     paddingHorizontal: 20,
+  },
+  searchBar: {
+    marginTop: 14,
+    width: '90%',
+    backgroundColor: '#fff',
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
+    elevation: 2,
+  },
+  searchText: {
+    color: '#6c757d',
+    fontSize: 15,
   },
   languagesSection: {
     padding: 20,
@@ -80,7 +146,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#2c3e50',
+    color: '#8B4513', // Primary brown
     marginBottom: 15,
   },
   languageCard: {
@@ -96,6 +162,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
+    borderLeftWidth: 4,
+    borderLeftColor: '#27ae60', // Green accent
   },
   languageHeader: {
     flexDirection: 'row',
@@ -112,27 +180,27 @@ const styles = StyleSheet.create({
   languageName: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#2c3e50',
+    color: '#8B4513', // Brown text
     marginBottom: 5,
   },
-  languageRegion: {
+  languageNative: {
     fontSize: 14,
-    color: '#7f8c8d',
+    color: '#6c757d',
   },
   arrow: {
     fontSize: 24,
-    color: '#3498db',
+    color: '#27ae60', // Green arrow
   },
-  statsButton: {
-    backgroundColor: '#9b59b6',
+  infoSection: {
     margin: 20,
     padding: 15,
+    backgroundColor: '#d1cecbff', // Light brown
     borderRadius: 8,
     alignItems: 'center',
   },
-  statsButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
+  infoText: {
+    //color: '#8B4513', // Dark brown text
+    fontSize: 14,
+    fontStyle: 'italic',
   },
 });

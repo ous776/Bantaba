@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Bantaba",
-    "slug": "Bantaba",
+    "slug": "bantaba",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -43,6 +43,13 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "4b8dc4a8-c1c5-4898-a501-6a23adf6df7a"
+      }
+    },
+    "owner": "cocamara"
   }
 }
