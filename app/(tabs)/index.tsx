@@ -12,11 +12,11 @@ export default function HomeScreen() {
       <View style={styles.header}>
         <View style={styles.headerTop}>
             <View style={styles.brand}>
-              <Image source={require('../../assets/images/icon01.png')} style={styles.headerIcon} />
+             
               <Text style={styles.title}>Bantaba</Text>
             </View>
-            <View style={styles.badge}>
-              <Text style={styles.badgeText}>{localLanguages.length} languages</Text>
+            <View style={styles.brand}>
+              <Image source={require('../../assets/images/icon01.png')} style={styles.headerIcon} />
             </View>
           </View>
 
@@ -25,13 +25,7 @@ export default function HomeScreen() {
           Help build translation datasets by verifying AI-generated translations
         </Text>
 
-        <TouchableOpacity
-          style={styles.searchBar}
-          onPress={() => router.push('/search')}
-          activeOpacity={0.8}
-        >
-          <Text style={styles.searchText}>🔎 Search translations or words</Text>
-        </TouchableOpacity>
+       
       </View>
 
       <View style={styles.languagesSection}>
