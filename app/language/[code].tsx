@@ -12,6 +12,7 @@ import {
 import { getLanguageByCode } from '../../src/config/languages';
 import StorageService from '../../src/services/StorageService';
 import TranslationService from '../../src/services/TranslationService';
+import UserService from '../../src/services/UserService';
 import { LanguageCode } from '../../src/types';
 
 export default function LanguageScreen() {
@@ -48,7 +49,7 @@ export default function LanguageScreen() {
       console.log('Translation received:', translationData.targetWord);
       setTranslation(translationData.targetWord);
       setTranslationId(translationData.id);
-      await StorageService.saveTranslation(translationData);
+      // Don't save to DB on load - only save when user submits
     } catch (error) {
       console.error('Error loading word:', error);
       
@@ -76,23 +77,57 @@ export default function LanguageScreen() {
     }
 
     try {
+      // First, get the original translation data
+      const translationData = await TranslationService.generateTranslation(
+        currentWord,
+        'en',
+        code as LanguageCode,
+      );
+      const originalTranslation = translationData.targetWord;
+      const wasCorrected = translation.trim() !== originalTranslation.trim();
+      
+      // Use the user's translation (may be corrected)
+      translationData.targetWord = translation;
+      await StorageService.saveTranslation(translationData);
+
+      // Then save the verification
       await StorageService.saveVerification({
-        translationId,
-        isCorrect: true,
-        correctedWord: translation,
+        translationId: translationData.id,
+        isCorrect: !wasCorrected,
+        correctedWord: wasCorrected ? translation : undefined,
         verifiedBy: 'user',
         verifiedAt: new Date(),
       });
 
-      console.log('✅ Verification saved successfully');
+      // Track user contribution
+      const action = wasCorrected ? 'corrected' : 'verified';
+      await UserService.trackContribution(
+        translationData.id,
+        action,
+        code as string
+      );
+
+      console.log('✅ Translation and verification saved successfully');
       loadNewWord();
     } catch (error) {
-      console.error('❌ Error saving verification:', error);
+      console.error('❌ Error saving translation:', error);
       Alert.alert('Error', 'Failed to save translation. Please try again.');
     }
   };
 
-  const handleSkip = () => {
+  const handleSkip = async () => {
+    // Track skipped contribution
+    if (translationId) {
+      try {
+        await UserService.trackContribution(
+          translationId,
+          'skipped',
+          code as string
+        );
+      } catch (error) {
+        console.warn('Failed to track skipped contribution:', error);
+      }
+    }
     loadNewWord();
   };
 
@@ -178,14 +213,14 @@ const styles = StyleSheet.create({
   },
   header: {
     backgroundColor: '#14743cff', // Primary green
-    padding: 25,
-    //paddingTop: 20,
+    padding: 30,
+    paddingTop: 100,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
   backButton: {
-    padding: 5,
+    padding: 10,
   },
   backButtonText: {
     color: '#fff',

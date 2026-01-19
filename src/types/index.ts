@@ -39,3 +39,23 @@ export interface AudioData {
   recordedBy: string;
   verified: boolean;
 }
+
+export interface User {
+  id: string;
+  name?: string;
+  email?: string;
+  phone?: string;
+  city?: string;
+  isAnonymous: boolean;
+  createdAt: Date;
+  contributionCount: number;
+}
+
+export interface UserContribution {
+  id: string;
+  userId: string;
+  translationId: string;
+  action: 'verified' | 'corrected' | 'skipped';
+  languageCode: string;
+  timestamp: Date;
+}

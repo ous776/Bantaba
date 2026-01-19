@@ -1,5 +1,6 @@
-import { API_BASE_URL, USE_BACKEND } from '../config/api';
+import { USE_BACKEND } from '../config/api';
 import { LanguageCode, Translation } from '../types';
+import ApiService from './ApiService';
 
 // Import JSON data files - using try/catch for empty files
 let mandinkaData: any[] = [];
@@ -56,33 +57,18 @@ class TranslationService {
   ): Promise<Translation> {
     try {
 
-      // If configured to use the backend, try search first
+      // If configured to use the backend (Supabase), try search first
       if (USE_BACKEND) {
         try {
-          const url = `${API_BASE_URL}/translations/search/${targetLang}?q=${encodeURIComponent(word)}&limit=1`;
-          const resp = await fetch(url);
-          if (resp.ok) {
-            const data = await resp.json();
-            if (Array.isArray(data) && data.length > 0) {
-              const row = data[0];
-              return {
-                id: String(row.id),
-                sourceWord: row.english_word || word,
-                targetWord: row.translated_word || `[${targetLang.toUpperCase()}] ${word}`,
-                sourceLanguage: sourceLang,
-                targetLanguage: targetLang,
-                status: row.status || 'pending',
-                generatedBy: 'api',
-                createdAt: row.created_at ? new Date(row.created_at) : new Date(),
-                category: row.category || category,
-                difficulty: row.difficulty || undefined,
-              } as Translation;
-            }
-          } else {
-            console.warn('Backend search returned non-ok status', resp.status);
+          const results = await ApiService.searchTranslations(targetLang, word, 1);
+          if (results.length > 0) {
+            return {
+              ...results[0],
+              category: results[0].category || category,
+            };
           }
         } catch (err) {
-          console.warn('Backend search failed, falling back to local data', err);
+          console.warn('Supabase search failed, falling back to local data', err);
         }
       }
 

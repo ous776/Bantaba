@@ -25,14 +25,26 @@ A React Native app for building word datasets for **Mandinka, Wolof, Jola, and F
 npm install
 ```
 
-2. **Add your translation data:**
+2. **Set up Supabase (Required for backend):**
+   - Create a new project at [supabase.com](https://supabase.com)
+   - Go to SQL Editor and run the migration script from `supabase_migration.sql`
+   - Get your Supabase URL and anon key from Settings > API
+   - Create a `.env` file in the root directory:
+     ```bash
+     EXPO_PUBLIC_SUPABASE_URL=your_supabase_project_url
+     EXPO_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+     EXPO_PUBLIC_USE_BACKEND=true
+     ```
+   - See `SUPABASE_SCHEMA.md` for detailed setup instructions
+
+3. **Add your translation data (Optional - for local fallback):**
    - Add JSON files to `/data/` directory:
      - `mandinka_lang.json` ✅ (already added)
      - `wolof_lang.json` (empty - add your data)
      - `fula_lang.json` (empty - add your data)  
      - `jola_lang.json` (empty - add your data)
 
-3. **Start the app:**
+4. **Start the app:**
 ```bash
 npm start
 ```
@@ -40,6 +52,14 @@ npm start
 Then press `a` for Android, `i` for iOS, or `w` for Web.
 
 ## ⚙️ Configuration
+
+### Supabase Backend
+
+The app now uses **Supabase** as the primary backend database. All translations are stored in Supabase and synced across devices.
+
+- **Primary Storage**: Supabase PostgreSQL database
+- **Local Cache**: AsyncStorage (for offline support and fallback)
+- **Setup**: See `SUPABASE_SCHEMA.md` for database schema and setup instructions
 
 ### JSON Data Format
 
@@ -104,12 +124,20 @@ Each language has its own screen where you:
 - Submit (saves to dataset) or Skip (moves to next word)
 - Track your progress in real-time
 
+## 🗄️ Database
+
+The app uses **Supabase** (PostgreSQL) for data storage. See `SUPABASE_SCHEMA.md` for:
+- Database schema documentation
+- SQL migration scripts
+- Security policies (RLS)
+- Setup instructions
+
 ## 🔜 Next Steps
 
-1. Add audio recording/playback for pronunciation verification
-2. Implement CSV/JSON batch import
-3. Add user authentication
-4. Set up backend sync for collaborative dataset building
+1. ✅ ~~Set up backend sync for collaborative dataset building~~ (Done - using Supabase)
+2. Add audio recording/playback for pronunciation verification
+3. Implement CSV/JSON batch import
+4. Add user authentication
 5. Integrate speech-to-text for audio transcription
 
 ## 📱 Built with Expo
